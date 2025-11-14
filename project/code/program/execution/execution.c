@@ -50,6 +50,7 @@ int create_socket(int protocol, void *data)
     {
         if (data)
             free (data);
+        printf("setsockopt error: %s\n", strerror(errno));
         print_error_and_free_list("Error: something went wrong with setsockopt() function.\nClosing the program...\n", 1);
     }
     // set a specific interface to know from where we received or send the packets

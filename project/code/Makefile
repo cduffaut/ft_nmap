@@ -9,13 +9,9 @@ SRCS	= \
 			program/parsing/scan.c program/parsing/help.c program/parsing/ip.c \
 			program/parsing/ports.c program/parsing/speedup.c program/receive/receive.c \
 			program/print_stats/print_stats.c program/print_stats/print_result.c
-
 OBJS	= $(SRCS:.c=.o)
-
 GCC		= gcc -Wall -Wextra -Werror
-
 NAME	= ft_nmap
-
 LIBFT	= libft/libft.a
 
 all: $(LIBFT) $(NAME)
@@ -24,7 +20,7 @@ $(LIBFT):
 	$(MAKE) -C libft
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(GCC) -o $(NAME) $(OBJS) -Llibft -lft -lpcap
+	$(GCC) -o $(NAME) $(OBJS) -Llibft -lft -lpcap -lpthread
 
 .c.o:
 	$(GCC) -c $< -o $@

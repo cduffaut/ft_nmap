@@ -12,5 +12,24 @@ Voici un résumé de chaque option de **Nmap** :
    
 6. **UDP Scan** : Envoie des paquets UDP pour tester si un port est ouvert. Si aucun message ICMP de port inaccessible n'est reçu, le port est considéré comme ouvert ou filtré.
 
-### To test with nmap here is an example of command line:
+<br>
+
+### How to compile
+
+```bash
+git clone https://github.com/cduffaut/ft_nmap.git
+cd ft_nmap/project
+docker compose up -d --build
+```
+
+Inside the docker container you can compile the project with:
+```bash
+# root rights are required
+sudo su
+make
+```
+
+Test the program with:
+```bash
 sudo nmap -sS -sU -sX -sF -sN -sA <IP>
+```
