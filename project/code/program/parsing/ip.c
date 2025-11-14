@@ -160,16 +160,16 @@ static t_ip create_ip_node(char *hostname)
     return ip;
 }
 
-static void add_node_to_list(t_ip addr)
+static void add_node_to_list(t_ip *addr)
 {
     t_ip *current = list->res;
     t_ip *new_node = NULL;
 
     for (; current; current = current->next)
     {
-        if (ft_memcmp(&current->addr.ipv4.sin_addr, &addr.addr.ipv4.sin_addr, sizeof(struct in_addr)) == 0)
+        if (ft_memcmp(&current->addr.ipv4.sin_addr, &addr->addr.ipv4.sin_addr, sizeof(struct in_addr)) == 0)
         {
-            printf("(!)Info: a hostname has been found in duplicate :%s. Ignoring it...\n", addr.hostname);
+            printf("(!)Info: a hostname has been found in duplicate :%s. Ignoring it...\n", addr->hostname);
             return;
         }
         if (!current->next)
@@ -179,7 +179,7 @@ static void add_node_to_list(t_ip addr)
     new_node = ft_calloc(1, sizeof(t_ip));
     if (!new_node)
         print_error_and_free_list("Error: ft_calloc() failed.Stopping the program...\n", 1);
-    ft_memcpy(new_node, &addr, sizeof(t_ip));
+    ft_memcpy(new_node, addr, sizeof(t_ip));
     new_node->next = NULL;
 
     if (current == NULL)
@@ -192,7 +192,7 @@ static void add_node_to_list(t_ip addr)
 void	add_ip_node_to_list()
 {
 	int		i = 0;
-	t_ip	tmp;
+	t_ip	*tmp;
 
 	if (!list || !list->ip_str)
 	{
@@ -204,8 +204,12 @@ void	add_ip_node_to_list()
 		print_error_and_free_list("Error: too many IPs (max IPs supported: %d)\n", MAX_IPS);
 	while (list->ip_str[i])
 	{
-		tmp = create_ip_node(list->ip_str[i]);
+		tmp = (t_ip *)malloc(sizeof(t_ip));
+		if (!tmp)
+			print_error_and_free_list("Error: malloc() failed for tmp IP node.\n", 1);
+		*tmp = create_ip_node(list->ip_str[i]);
 		add_node_to_list(tmp);
+		free(tmp);
 		i++;
 	}
 }

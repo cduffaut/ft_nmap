@@ -27,3 +27,4 @@ release/
 *.user
 *.workspace
 tags
+ft_nmap
