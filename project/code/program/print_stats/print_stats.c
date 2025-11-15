@@ -7,13 +7,9 @@ static void    print_ip_address()
     for (t_ip *tmp = list->res; tmp; tmp = tmp->next)
     {
         if (!tmp->next)
-        {
             printf("%s\n", tmp->hostname);
-        }
         else
-        {
             printf("%s, ", tmp->hostname);
-        }
     }
 }
 

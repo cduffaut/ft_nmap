@@ -10,7 +10,7 @@ SRCS	= \
 			program/parsing/ports.c program/parsing/speedup.c program/receive/receive.c \
 			program/print_stats/print_stats.c program/print_stats/print_result.c
 OBJS	= $(SRCS:.c=.o)
-GCC		= gcc -Wall -Wextra -Werror
+GCC		= gcc -Wall -Wextra -Werror -g
 NAME	= ft_nmap
 LIBFT	= libft/libft.a
 

@@ -106,15 +106,17 @@ void    *execution(int scan)
     for (struct s_ip *ip = list->res; ip != NULL; ip = ip->next)
     {
         // while loop int tab port
-        for (int port = 0; port <= RANGE_PORT; port++)
+        for (int port = 0; port < RANGE_PORT; port++)
         {
             // default status to filtred
             if (port_asked(port))
             {
+                pthread_mutex_lock(&list->state_mutex);
                 ip->state[scan][port] = FILTERED;
                 // if the scan is UDP, FIN, NUL, XMAS it's also assign to open
                 if (scan == FIN || scan == NUL || scan == XMAS || scan == UDP)
                     ip->state[scan][port] += OPEN;
+                pthread_mutex_unlock(&list->state_mutex);
                 // set dest port of the packet and calculate the checksum
                 if (protocol == IPPROTO_TCP)
                 {

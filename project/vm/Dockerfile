@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	net-tools \
 	lsof \
 	nmap \
+	netbase \
 	sqlite3 libsqlite3-dev libpcap0.8-dev \
 	iputils-ping \
 	&& apt-get clean \

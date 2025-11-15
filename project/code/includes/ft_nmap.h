@@ -20,7 +20,6 @@
 #include <pcap.h>         // pcap_breakloop, pcap_close, pcap_compile, pcap_dispatch, pcap_geterr, pcap_lookupnet, pcap_open_live, pcap_findalldevs, pcap_freealldevs, pcap_setfilter
 #include <errno.h>        // errno, gai_strerror
 #include <stdbool.h>
-#include <netinet/in.h>
 #include <netinet/ip.h>
 #include <netinet/udp.h>
 #include <netinet/ip_icmp.h>
@@ -138,6 +137,7 @@ typedef struct s_bag
 	bool						info_scan[TOTAL_TYPE];
 
 	pcap_t 						*handle;
+	pthread_mutex_t				state_mutex; // mutex for thread-safe access to state array
 }			t_bag;
 
 // --------------------------------- [ PROTOYPES ] --------------------------------- //
@@ -211,7 +211,7 @@ void			init_checksum(int protocol, t_packet_header *packet, int len_packet, t_ip
 void launch_thread_scan();
 
 // print_stats.c
-void 	ft_display_stats();
+void 	ft_display_stats(struct timeval start);
 void    print_result();
 char    *state_in_str(int state);
 char    *scan_in_str(int scan);

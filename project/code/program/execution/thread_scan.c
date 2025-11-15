@@ -32,15 +32,17 @@ static void    *routine(void *infos)
     for (struct s_ip *ip = list->res; ip != NULL; ip = ip->next)
     {
         // while loop int tab port
-        for (int port = 0; port <= RANGE_PORT; port++)
+        for (int port = 0; port < RANGE_PORT; port++)
         {
             // default status to filtred
             if (data->port[port] == true)
             {
+                pthread_mutex_lock(&list->state_mutex);
                 ip->state[scan][port] = FILTERED;
                 // if the scan is UDP, FIN, NUL, XMAS it's also assign to open
                 if (scan == FIN || scan == NUL || scan == XMAS || scan == UDP)
                     ip->state[scan][port] += OPEN;
+                pthread_mutex_unlock(&list->state_mutex);
                 // set dest port of the packet and calculate the checksum
                 if (protocol == IPPROTO_TCP)
                 {
@@ -90,17 +92,17 @@ static void ft_setter(int total, int *setter, int start, int end, bool *ele)
 
 bool is_scan_asked(int scan)
 {
-    if ((list->scans.all || list->scans.null == true) && scan == NUL)
+    if ((list->scans.all || list->scans.null) && scan == NUL)
         return (true);
-    if ((list->scans.all || list->scans.syn == true) && scan == SYN)
+    if ((list->scans.all || list->scans.syn) && scan == SYN)
         return (true);
-    if ((list->scans.all || list->scans.ack == true) && scan == ACK)
+    if ((list->scans.all || list->scans.ack) && scan == ACK)
         return (true);
-    if ((list->scans.all || list->scans.fin == true) && scan == FIN)
+    if ((list->scans.all || list->scans.fin) && scan == FIN)
         return (true);
-    if ((list->scans.all || list->scans.xmas == true) && scan == XMAS)
+    if ((list->scans.all || list->scans.xmas) && scan == XMAS)
         return (true);
-    if ((list->scans.all || list->scans.udp == true) && scan == UDP)
+    if ((list->scans.all || list->scans.udp) && scan == UDP)
         return (true);
     return (false);
 }
@@ -153,6 +155,10 @@ void launch_thread_scan()
             }
         }
     }
-    for (int i = 0; i < thread_id; i++)
-        pthread_join(threads[i], NULL);
+    for (int i = 0; i < thread_id; i++) {
+        int result = pthread_join(threads[i], NULL);
+        if (result != 0) {
+            print_error_and_free_list("Error: something went wrong with pthread_join() function.\nClosing the program...\n", 1);
+        }
+    }
 }

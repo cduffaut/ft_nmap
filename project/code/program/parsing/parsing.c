@@ -2,6 +2,21 @@
 
 extern struct s_bag *list;
 
+static size_t ft_strncat(char *dest, const char *src, size_t n)
+{
+	size_t	dest_len = ft_strlen(dest);
+	size_t	i;
+
+	i = 0;
+	while (src[i] && i < n)
+	{
+		dest[dest_len + i] = src[i];
+		i++;
+	}
+	dest[dest_len + i] = '\0';
+	return (dest_len + i);
+}
+
 static void	check_options(int ac, char **av)
 {
 	int	i = 1;
@@ -85,11 +100,11 @@ void	init_pcap()
 
     while (list->ip_str[i])
     {
-        ft_strcat(filter, "host ");
-        ft_strcat(filter, list->ip_str[i]);
+        ft_strncat(filter, "host ", 5);
+        ft_strncat(filter, list->ip_str[i], ft_strlen(list->ip_str[i]));
 		i++;
         if (list->ip_str[i])
-            ft_strcat(filter, " or ");
+            ft_strncat(filter, " or ", 4);
     }
 	// (bpf_program) compiled filter in a readable pcap format
 	if (pcap_compile(list->handle, &fp, filter, 1, PCAP_NETMASK_UNKNOWN) == -1)

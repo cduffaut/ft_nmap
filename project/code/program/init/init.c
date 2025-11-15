@@ -5,14 +5,8 @@ extern struct s_bag *list;
 // if the number is in the range specified, return true, if not, return false
 static bool in_range(int start, int end, char *c)
 {
-	int	i = start;
-	while (i <= end)
-	{
-		if (i == ft_atoi(c))
-			return (true);
-		i++;
-	}
-	return (false);
+	int num = ft_atoi(c);
+	return (num >= start && num <= end);
 }
 
 // return 1 if the str of the index has already been treated, if not, return 0

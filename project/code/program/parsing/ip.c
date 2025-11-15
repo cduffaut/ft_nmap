@@ -196,12 +196,12 @@ void	add_ip_node_to_list()
 
 	if (!list || !list->ip_str)
 	{
-		print_error_and_free_list("Erreur : liste ou ip_str non initialisée\n", 0);
+		print_error_and_free_list("Error : list or ip_str not initialized\n", 0);
 		return;
 	}
 
 	if (ft_strlen_tab(list->ip_str) > MAX_IPS)
-		print_error_and_free_list("Error: too many IPs (max IPs supported: %d)\n", MAX_IPS);
+		print_error_and_free_list("Error: too many IPs (max IPs supported: 42)\n", 0);
 	while (list->ip_str[i])
 	{
 		tmp = (t_ip *)malloc(sizeof(t_ip));

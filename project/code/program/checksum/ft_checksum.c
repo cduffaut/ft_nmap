@@ -25,7 +25,7 @@ void	init_checksum(int protocol, t_packet_header *packet, int len_packet, t_ip *
 {
 	int		len_pshdr = sizeof(t_phdr);
 	char	buf[len_pshdr + len_packet];
-	ft_memset(&buf, 0, sizeof(len_pshdr + len_packet));
+	ft_memset(buf, 0, len_pshdr + len_packet);
 	
 	// init and assign the pseudo header at the beggining of the buf
 	t_phdr	psheader;

@@ -11,10 +11,12 @@ static void parse_icmp_response(int scan, int port, struct icmphdr *icmp_hdr, st
         icmp_hdr->code != ICMP_UNREACH_HOST_PROHIB && icmp_hdr->code != ICMP_UNREACH_FILTER_PROHIB)
         return ;
 
+    pthread_mutex_lock(&list->state_mutex);
     if (scan == UDP && icmp_hdr->code == ICMP_UNREACH_PORT) // unreacable response for an UDP scan tell us that the port is closed
         ips->state[scan][port] = CLOSED;
     else
         ips->state[scan][port] = FILTERED; // firewall or restrictions network block the access to the port
+    pthread_mutex_unlock(&list->state_mutex);
 }
 
 // pkthdr= data of the packet
@@ -33,7 +35,7 @@ void    ft_receive_pckt(u_char *user, const struct pcap_pkthdr *pkthdr, const u_
     t_packet_header *iphdr = (t_packet_header *)packet; // point to the iphdr of the packet
     t_packet_header *packet_header = (t_packet_header *)(packet + len_iphdr); // point to the header of the packet
     uint8_t protocol = iphdr->ipv4.protocol; // uint8_t is the optimise size to stock protocol value
-    t_ip *ips;
+    t_ip *ips = NULL;
     for (ips = list->res; ips; ips = ips->next)
     {
         if (iphdr->ipv4.saddr == ips->addr.ipv4.sin_addr.s_addr)
@@ -70,6 +72,7 @@ void    ft_receive_pckt(u_char *user, const struct pcap_pkthdr *pkthdr, const u_
         else
             port = ntohs(packet_header->udp.source);
 
+        pthread_mutex_lock(&list->state_mutex);
         if (scan == UDP || packet_header->tcp.syn) // OPEN SYN if res is SYN/ACK (but syn always present so its easier like that)
             ips->state[scan][port] = OPEN;
         else if (packet_header->tcp.rst)
@@ -79,6 +82,7 @@ void    ft_receive_pckt(u_char *user, const struct pcap_pkthdr *pkthdr, const u_
             else
                 ips->state[scan][port] = CLOSED;
         }
+        pthread_mutex_unlock(&list->state_mutex);
     }
     alarm (5); // relaunch alarm each time we get a packet so it doesn't stop until there is no more packet to catch
 }
