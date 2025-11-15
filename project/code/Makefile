@@ -35,4 +35,7 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: re fclean clean all
+leaks:
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$(NAME) --file file.txt
+
+.PHONY: re fclean clean all leaks
